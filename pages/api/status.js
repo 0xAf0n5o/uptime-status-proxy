@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 
+// Status endpoint for Framer app
 export default async function handler(req, res) {
   // Allow specific origin for Framer
   res.setHeader('Access-Control-Allow-Origin', 'https://youthful-vacation-500847.framer.app');
