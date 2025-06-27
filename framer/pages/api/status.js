@@ -1,19 +1,29 @@
 // CORS headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+const allowedOrigins = [
+  'https://youthful-vacation-500847.framer.app',
+  'https://uptime-status-proxy.vercel.app',
+  'http://localhost:3000'
+];
+
+const corsHeaders = (origin) => ({
+  'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : allowedOrigins[0],
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
   'Content-Type': 'application/json',
   'Cache-Control': 'public, max-age=60',
-  'Vary': 'Origin'
-};
+  'Vary': 'Origin',
+  'Access-Control-Allow-Credentials': 'true'
+});
 
 export default async function handler(req, res) {
+  const origin = req.headers.origin || '';
+  const headers = corsHeaders(origin);
+
   // Handle OPTIONS method for CORS preflight
   if (req.method === 'OPTIONS') {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    Object.entries(headers).forEach(([key, value]) => {
+      res.setHeader(key, value);
+    });
     return res.status(200).end();
   }
 
@@ -31,12 +41,11 @@ export default async function handler(req, res) {
       monitors: data?.psp?.monitors?.length || 0
     };
     
-    // Set CORS headers
-    Object.entries(corsHeaders).forEach(([key, value]) => {
+    // Set CORS headers and send response
+    Object.entries(headers).forEach(([key, value]) => {
       res.setHeader(key, value);
     });
     
-    // Send response
     return res.status(200).json(responseData);
     
   } catch (error) {
@@ -49,12 +58,11 @@ export default async function handler(req, res) {
       error: error.message
     };
     
-    // Set CORS headers
-    Object.entries(corsHeaders).forEach(([key, value]) => {
+    // Set CORS headers and send error response
+    Object.entries(headers).forEach(([key, value]) => {
       res.setHeader(key, value);
     });
     
-    // Send error response
     return res.status(200).json(errorResponse);
   }
 }
