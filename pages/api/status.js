@@ -2,14 +2,25 @@ import fetch from 'node-fetch';
 
 // Status endpoint for Framer app
 export default async function handler(req, res) {
-  // Allow specific origin for Framer
-  res.setHeader('Access-Control-Allow-Origin', 'https://youthful-vacation-500847.framer.app');
+  // Set CORS headers
+  const allowedOrigins = [
+    'https://youthful-vacation-500847.framer.app',
+    'https://uptime-status-proxy.vercel.app',
+    'http://localhost:3000'
+  ];
+  
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Vary', 'Origin');
   res.setHeader('Content-Type', 'application/json');
-  res.setHeader('Cache-Control', 'public, max-age=60');
+  res.setHeader('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=300');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
