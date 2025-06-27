@@ -5,25 +5,30 @@ const allowedOrigins = [
   'http://localhost:3000'
 ];
 
-const corsHeaders = (origin) => ({
-  'Access-Control-Allow-Origin': allowedOrigins.includes(origin) ? origin : allowedOrigins[0],
-  'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Content-Type': 'application/json',
-  'Cache-Control': 'public, max-age=60',
-  'Vary': 'Origin',
-  'Access-Control-Allow-Credentials': 'true'
-});
+// Set CORS headers
+function setCorsHeaders(req, res) {
+  const origin = req.headers.origin;
+  
+  // Set Vary header to prevent caching of CORS responses
+  res.setHeader('Vary', 'Origin');
+  
+  // Set CORS headers
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+  
+  // Set other headers
+  res.setHeader('Content-Type', 'application/json');
+  res.setHeader('Cache-Control', 'public, max-age=60');
+}
 
 export default async function handler(req, res) {
-  const origin = req.headers.origin || '';
-  const headers = corsHeaders(origin);
-
   // Handle OPTIONS method for CORS preflight
   if (req.method === 'OPTIONS') {
-    Object.entries(headers).forEach(([key, value]) => {
-      res.setHeader(key, value);
-    });
+    setCorsHeaders(req, res);
     return res.status(200).end();
   }
 
@@ -42,10 +47,7 @@ export default async function handler(req, res) {
     };
     
     // Set CORS headers and send response
-    Object.entries(headers).forEach(([key, value]) => {
-      res.setHeader(key, value);
-    });
-    
+    setCorsHeaders(req, res);
     return res.status(200).json(responseData);
     
   } catch (error) {
@@ -59,10 +61,7 @@ export default async function handler(req, res) {
     };
     
     // Set CORS headers and send error response
-    Object.entries(headers).forEach(([key, value]) => {
-      res.setHeader(key, value);
-    });
-    
+    setCorsHeaders(req, res);
     return res.status(200).json(errorResponse);
   }
 }
