@@ -5,15 +5,21 @@ const nextConfig = {
   images: {
     domains: ['assets.vercel.com'],
   },
-  async rewrites() {
+  async headers() {
     return [
       {
-        source: '/api/status',
-        // In a real deployment, replace this with your actual API URL
-        // For local development, you can use a proxy to your local server
-        destination: 'http://localhost:3000/api/status',
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Credentials', value: 'true' },
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT' },
+          { key: 'Access-Control-Allow-Headers', value: 'X-Requested-With, Content-Type' },
+        ],
       },
     ];
+  },
+  async rewrites() {
+    return []; // Remove the previous rewrite as we're handling the API locally now
   },
 };
 
