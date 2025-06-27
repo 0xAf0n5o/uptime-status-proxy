@@ -1,5 +1,7 @@
 # Uptime Status Proxy
 
+> Last deployment: 2025-06-26 20:57:30 UTC
+
 A lightweight Node.js proxy server that provides a clean API for checking the status of UptimeRobot monitors. This service fetches data from UptimeRobot's internal API and provides a simple JSON endpoint for checking status, along with Prometheus metrics for monitoring.
 
 ## Features
