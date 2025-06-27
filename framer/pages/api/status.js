@@ -1,15 +1,20 @@
-// Set CORS headers
+// CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Content-Type': 'application/json'
+  'Content-Type': 'application/json',
+  'Cache-Control': 'public, max-age=60',
+  'Vary': 'Origin'
 };
 
 export default async function handler(req, res) {
   // Handle OPTIONS method for CORS preflight
   if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders });
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    return res.status(200).end();
   }
 
   try {
@@ -26,9 +31,13 @@ export default async function handler(req, res) {
       monitors: data?.psp?.monitors?.length || 0
     };
     
-    // Set CORS headers and send response
-    res.writeHead(200, corsHeaders);
-    res.end(JSON.stringify(responseData));
+    // Set CORS headers
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      res.setHeader(key, value);
+    });
+    
+    // Send response
+    return res.status(200).json(responseData);
     
   } catch (error) {
     console.error('Error fetching status:', error);
@@ -40,8 +49,12 @@ export default async function handler(req, res) {
       error: error.message
     };
     
-    // Set CORS headers and send error response
-    res.writeHead(200, corsHeaders);
-    res.end(JSON.stringify(errorResponse));
+    // Set CORS headers
+    Object.entries(corsHeaders).forEach(([key, value]) => {
+      res.setHeader(key, value);
+    });
+    
+    // Send error response
+    return res.status(200).json(errorResponse);
   }
 }
