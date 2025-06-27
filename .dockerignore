@@ -1,0 +1,43 @@
+# Dependency directories
+node_modules
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test files
+__tests__
+*.test.js
+
+# Git
+.git
+.gitignore
+
+# Local development files
+.dockerignore
+.docker-compose.override.yml
+
+# Build files
+dist/
+build/

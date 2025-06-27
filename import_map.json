@@ -1,0 +1,11 @@
+{
+  "imports": {
+    "express": "./node_modules/express/index.js",
+    "cors": "./node_modules/cors/index.js",
+    "node-fetch": "./node_modules/node-fetch/index.js",
+    "cheerio": "./node_modules/cheerio/index.js"
+  },
+  "assert": {
+    "type": "json"
+  }
+}

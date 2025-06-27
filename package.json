@@ -2,8 +2,19 @@
     "name": "uptime-status-proxy",
     "version": "1.0.0",
     "type": "module",
+    "main": "server.js",
+    "exports": {
+        ".": {
+            "import": "./server.js",
+            "require": "./server.js"
+        }
+    },
     "dependencies": {
-      "cheerio": "^1.0.0-rc.12",
-      "node-fetch": "^2.6.7"
+        "cheerio": "^1.0.0-rc.12",
+        "cors": "^2.8.5",
+        "express": "^5.1.0",
+        "express-rate-limit": "^7.5.1",
+        "node-fetch": "^2.6.7",
+        "prom-client": "^15.1.3"
     }
-  }
+}
